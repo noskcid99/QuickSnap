@@ -2,7 +2,7 @@ using System;
 
 #if DEBUG
 	using NUnit.Framework;
-#endif 
+#endif
 
 
 namespace CardGames.GameLogic
@@ -14,7 +14,7 @@ namespace CardGames.GameLogic
 	{
         private readonly Card[] 	_cards = new Card[52];
         private int 	_topCard;
-     
+
 		/// <summary>
 		/// Creates a new Deck with 52 Cards. The first card
 		/// will be the top of the Deck.
@@ -22,20 +22,20 @@ namespace CardGames.GameLogic
 		public Deck ()
 		{
 		    int i = 0;
-		    
-		    for (Suit s = Suit.CLUB; s <= Suit.SPADE; s++) 
+
+		    for (Suit s = Suit.CLUB; s <= Suit.SPADE; s++)
 		    {
-		        for (Rank r = Rank.ACE; r <= Rank.KING; r++) 
+		        for (Rank r = Rank.ACE; r <= Rank.KING; r++)
 		        {
 		            Card c = new Card(r, s);
 		            _cards[i] = c;
 		            i++;
-		        }    
+		        }
 		    }
-		
+
 		    _topCard = 0;
 		}
-        
+
 		/// <summary>
 		/// Indicates how many Cards remain in the Deck.
 		/// </summary>
@@ -55,15 +55,29 @@ namespace CardGames.GameLogic
 		public void Shuffle()
 		{
 			//TODO: implement shuffle!
+			for(int i = 0; i < 52; i++){
+				if(_cards[i].FaceUp) _cards[i].TurnOver();
+			}
+				Random rnd = new Random();
+
+				for(int i = 0; i < 52 - 1; i++)
+				{
+					int rndIdx = rnd.Next(52 - i);
+
+					Card temp = _cards[i];
+					_cards[i] = _cards[i + rndIdx];
+					_cards[i + rndIdx] = temp;
+				}
+				_topCard = 0;
 		}
-        
+
 		/// <summary>
 		/// Takes a card from the top of the Deck. This will return
 		/// <c>null</c> when there are no cards remaining in the Deck.
 		/// </summary>
         public Card Draw()
         {
-            if (_topCard < 52) 
+            if (_topCard < 52)
 		    {
 		        Card result = _cards[_topCard];
 		        _topCard++;
@@ -73,7 +87,7 @@ namespace CardGames.GameLogic
 		    {
 		        return null;
 		    }
-		
+
         }
 	}
 
@@ -96,27 +110,26 @@ namespace CardGames.GameLogic
 			Deck d = new Deck();
 
 			Assert.AreEqual(52, d.CardsRemaining);
-			
+
 			Card c = d.Draw();
 			Assert.AreEqual(51, d.CardsRemaining);
 			Assert.AreEqual(Rank.ACE, c.Rank);
 			Assert.AreEqual(Suit.CLUB, c.Suit);
 
 			int count = 51;
-			
-			// Draw all cards from the deck 
+
+			// Draw all cards from the deck
 			while ( d.CardsRemaining > 0 )
 			{
 				c = d.Draw();
 				count--;
-				
+
 				Assert.AreEqual(count, d.CardsRemaining);
 			}
 
 		}
 	}
 
-	#endif 
+	#endif
 	#endregion
 }
-
